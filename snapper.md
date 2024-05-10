@@ -159,7 +159,12 @@ line=$(grep -n btrfs /mnt/etc/fstab | cut -d":" -f1)
 echo "sudo sed -i '"$line"s/.$/0/' /mnt/etc/fstab" | sh
 DISP=$(grep btrfs /mnt/etc/fstab | awk '{print $1}')
 echo -n -e "\n# btrfs\n" | sudo tee -a /mnt/etc/fstab
-grep btrfs /etc/mtab | grep -v "1/snapshot" | sed s@rw.*,subvolid=.*,@defaults,@ | sed s@/mnt@@ | sed s@/dev/nvme0n1p5@$DISP@ | sudo tee -a /mnt/etc/fstab
+grep btrfs /etc/mtab \
+| grep -v "1/snapshot" \
+| sed s@rw.*,subvolid=.*,@defaults,@ \
+| sed s@/mnt@@ \
+| sed s@/dev/nvme0n1p5@$DISP@ \
+| sudo tee -a /mnt/etc/fstab
 ```
 
 ![](img/2024-05-10-04-04-15.png)

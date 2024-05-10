@@ -14,7 +14,11 @@
   - [Aggiornare fstab](#aggiornare-fstab)
   - [Riavvio](#riavvio)
 - [Primo avvio](#primo-avvio)
+  - [Configurare snapper sul sistema appena avviato](#configurare-snapper-sul-sistema-appena-avviato)
+  - [Installare btrfs-assistant](#installare-btrfs-assistant)
 
+<!-- /TOC -->
+<!-- /TOC -->
 <!-- /TOC -->
 <!-- /TOC -->
 <!-- /TOC -->
@@ -60,7 +64,8 @@ single boot | ![](img/2024-05-10-00-58-45.png)
 
 # Preparazione del volume btrfs
 
-Prima di avviare l'installazione, sarà necessario preparare il volume btrfs.
+Prima di avviare l'installazione, sarà necessario preparare il volume btrfs.  
+E' possibile utilizzare un terminale dalla Live.  
 
 ## Creazione del primo volume
 
@@ -115,7 +120,8 @@ Inizia l'installazione.
 
 # Installazione di Ubuntu
 
-Scelte di rilievo per il buon esito dell'installazione:  
+Eseguire l'installazione seguendo le istruzioni a video.  
+Scelte di rilievo da eseguire per il buon esito dell'installazione:  
 - Selezionare la procedura "Manuale" durante il setup del disco
 
 ![](img/2024-05-10-02-20-15.png)
@@ -124,7 +130,7 @@ Scelte di rilievo per il buon esito dell'installazione:
 
 ![](img/2024-05-10-02-22-34.png)
 
-Attenzione, le partizioni non vanno formattate, il dispositivo è già configurato per l'installazione
+Attenzione, le partizioni non vanno formattate, il dispositivo è già configurato per l'installazione, durante i passaggi Preparazione del disco, e Preparazione del volume btrfs.
 
 
 # Attività successive l'installazione
@@ -145,6 +151,8 @@ sudo mount -o subvol=@/.snapshots /dev/nvme0n1p5 /mnt/.snapshots
 ```
 
 ## Aggiornare fstab
+
+Si aggiorna il file `mnt/etc/fstab` perchè monti i subvolumi attesi dove atteso.  
 
 ```bash
 line=$(grep -n btrfs /mnt/etc/fstab | cut -d":" -f1)
@@ -174,6 +182,8 @@ sudo shutdown -r now
 
 # Primo avvio
 
+## Configurare snapper sul sistema appena avviato
+
 Si installa e configura snapper.  
 Il file di configurazione è stato ereditato dal subvolume @.
 
@@ -184,3 +194,8 @@ sudo btrfs quota enable /
 sudo snapper setup-quota
 sudo snapper list
 ```
+
+![](img/2024-05-10-10-48-56.png)
+
+## Installare btrfs-assistant 
+

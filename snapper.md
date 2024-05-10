@@ -6,7 +6,7 @@
 - [Tabella spazio temporale](#tabella-spazio-temporale)
 - [Preparazione del disco](#preparazione-del-disco)
 - [Preparazione del volume btrfs](#preparazione-del-volume-btrfs)
-  - [Creazione del primo volume](#creazione-del-primo-volume)
+  - [Creazione del subvolume @](#creazione-del-subvolume-)
   - [Il "first root filesystem"](#il-first-root-filesystem)
 - [Installazione di Ubuntu](#installazione-di-ubuntu)
 - [Attività successive l'installazione](#attività-successive-linstallazione)
@@ -67,7 +67,7 @@ single boot | ![](img/2024-05-10-00-58-45.png)
 Prima di avviare l'installazione, sarà necessario preparare il volume btrfs.  
 E' possibile utilizzare un terminale dalla Live.  
 
-## Creazione del primo volume
+## Creazione del subvolume @
 
 Si monta il filesystem btrfs creato nel precedente step, e si crea il subvolume @ (ID=256) (il secondo subvolume del volume. Il primo è subvolid=5).  
 

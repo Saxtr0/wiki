@@ -68,17 +68,14 @@ single boot | ![](img/2024-05-10-00-58-45.png)
 
 Nota: questa guida è pensata per essere eseguita in modalità copia e incolla.
 Prima di effettuare il copia e incolla verificare che la variabile `BTRFSDEV` della guida, risolve correttamente il device da utilizzare.  
-(in alternativa, modificare il device `/dev/nvme0n1p5`, con il proprio device btrfs)
+(in alternativa, modificare il device `$BTRFSDEV`, con il proprio device btrfs)
 
 ```bash
 BTRFSDEV=$(sudo blkid | grep btrfs | cut -d ":" -f1)
 echo $BTRFSDEV
 ```
 
-![](img/2024-05-12-21-06-47.png)
-
-
-
+![](img/2024-05-13-01-53-53.png)
 
 
 # Preparazione del volume btrfs

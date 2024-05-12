@@ -18,7 +18,7 @@
   - [Installare btrfs-assistant](#installare-btrfs-assistant)
 
 <!-- /TOC -->
-<!-- /TOC -->
+
 <!-- /TOC -->
 <!-- /TOC -->
 <!-- /TOC -->
@@ -61,6 +61,20 @@ caso di esempio | esempio con gparted
 dual boot | ![](img/2024-05-10-00-52-01.png)
 single boot | ![](img/2024-05-10-00-58-45.png)
 
+Nota: questa guida è pensata per essere eseguita in modalità copia e incolla.
+Prima di effettuare il copia e incolla verificare che la variabile `BTRFSDEV` della guida, risolve correttamente il device da utilizzare.  
+(in alternativa, modificare il device `/dev/nvme0n1p5`, con il proprio device btrfs)
+
+```bash
+BTRFSDEV=$(sudo blkid | grep btrfs | cut -d ":" -f1)
+echo $BTRFSDEV
+```
+
+![](img/2024-05-12-21-06-47.png)
+
+
+
+
 
 # Preparazione del volume btrfs
 
@@ -72,7 +86,8 @@ E' possibile utilizzare un terminale dalla Live.
 Si monta il filesystem btrfs creato nel precedente step, e si crea il subvolume @ (ID=256) (il secondo subvolume del volume. Il primo è subvolid=5).  
 
 ```bash
-sudo mount /dev/nvme0n1p5 /mnt  
+BTRFSDEV=$(sudo blkid | grep btrfs | cut -d ":" -f1)
+sudo mount $BTRFSDEV /mnt  
 sudo btrfs subvolume create /mnt/@
 ```
 
@@ -87,14 +102,15 @@ sudo mkdir /mnt/@/etc/snapper/configs -p
 Si modifica il default subvolume, e si rimonta il volume:
 
 ```bash
+BTRFSDEV=$(sudo blkid | grep btrfs | cut -d ":" -f1)
 sudo btrfs subvolume set-default /mnt/@
-sudo umount /mnt && sudo mount /dev/nvme0n1p5 /mnt
+sudo umount /mnt && sudo mount $BTRFSDEV /mnt
 ```
 
 Si installa, configura e utilizza snapper per creare il "first root filesystem" (sulla Live)  
 
 ```bash
-sudo apt install snapper
+sudo apt install snapper -y
 systemctl stop snapper-timeline.timer  # prima dell'installazione non vogliamo le snapshot di tipo timeline
 sudo snapper create-config /mnt
 sudo cp /etc/snapper/configs/root  /mnt/etc/snapper/configs/
@@ -113,7 +129,6 @@ sudo btrfs subvolume create /mnt/var/tmp
 sudo btrfs subvolume create /mnt/var/lib/flatpack
 sudo btrfs subvolume set-default /mnt/.snapshots/1/snapshot
 sudo umount /mnt
-sudo apt purge snapper
 ```
 
 Inizia l'installazione.  
@@ -140,14 +155,15 @@ Attenzione, le partizioni non vanno formattate, il dispositivo è già configura
 Si verifica che tutti subvolumi si montino correttamente dove atteso e come atteso
 
 ```bash
-sudo mount /dev/nvme0n1p5 /mnt
-sudo mount -o subvol=@/home /dev/nvme0n1p5 /mnt/home
-sudo mount -o subvol=@/var/cache /dev/nvme0n1p5 /mnt/var/cache
+BTRFSDEV=$(sudo blkid | grep btrfs | cut -d ":" -f1)
+sudo mount $BTRFSDEV /mnt
+sudo mount -o subvol=@/home $BTRFSDEV /mnt/home
+sudo mount -o subvol=@/var/cache $BTRFSDEV /mnt/var/cache
 sudo mkdir /mnt/var/lib/flatpack -p
-sudo mount -o subvol=@/var/log /dev/nvme0n1p5 /mnt/var/log
-sudo mount -o subvol=@/var/tmp /dev/nvme0n1p5 /mnt/var/tmp
-sudo mount -o subvol=@/var/lib/flatpack /dev/nvme0n1p5 /mnt/var/lib/flatpack
-sudo mount -o subvol=@/.snapshots /dev/nvme0n1p5 /mnt/.snapshots
+sudo mount -o subvol=@/var/log $BTRFSDEV /mnt/var/log
+sudo mount -o subvol=@/var/tmp $BTRFSDEV /mnt/var/tmp
+sudo mount -o subvol=@/var/lib/flatpack $BTRFSDEV /mnt/var/lib/flatpack
+sudo mount -o subvol=@/.snapshots $BTRFSDEV /mnt/.snapshots
 ```
 
 ## Aggiornare fstab
@@ -155,6 +171,7 @@ sudo mount -o subvol=@/.snapshots /dev/nvme0n1p5 /mnt/.snapshots
 Si aggiorna il file `mnt/etc/fstab` perchè monti i subvolumi attesi dove atteso.  
 
 ```bash
+BTRFSDEV=$(sudo blkid | grep btrfs | cut -d ":" -f1)
 line=$(grep -n btrfs /mnt/etc/fstab | cut -d":" -f1)
 echo "sudo sed -i '"$line"s/.$/0/' /mnt/etc/fstab" | sh
 DISP=$(grep btrfs /mnt/etc/fstab | awk '{print $1}')
@@ -163,7 +180,7 @@ grep btrfs /etc/mtab \
 | grep -v "1/snapshot" \
 | sed s@rw.*,subvolid=.*,@defaults,@ \
 | sed s@/mnt@@ \
-| sed s@/dev/nvme0n1p5@$DISP@ \
+| sed s@$BTRFSDEV@$DISP@ \
 | sudo tee -a /mnt/etc/fstab
 ```
 
@@ -190,17 +207,29 @@ sudo shutdown -r now
 ## Configurare snapper sul sistema appena avviato
 
 Si installa e configura snapper.  
-Il file di configurazione è stato ereditato dal subvolume @.
 
 ```bash
-sudo apt install snapper
+sudo apt install snapper -y
+```  
+Il file di configurazione `/etc/snapper/configs/root`, è stato ereditato dal subvolume @.  
+Abilitiamo la configurazione nel file `/etc/default/snapper`.. 
+
+```bash
 sudo sed -i s/SNAPPER_CONFIGS=\"\"/SNAPPER_CONFIGS=\"root\"/g /etc/default/snapper
+sudo systemctl restart snapperd
+```  
+
+Si riavvia snapper per attivare la configura
+
+Si abilita la quota, in modo da visualizzare il campo "Used space" nella lista delle snapshot.  
+
+```bash
 sudo btrfs quota enable /
 sudo snapper setup-quota
 sudo snapper list
 ```
 
-![](img/2024-05-10-10-48-56.png)
+![](img/2024-05-12-22-28-40.png)
 
 ## Installare btrfs-assistant 
 

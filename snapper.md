@@ -120,7 +120,7 @@ sudo sed -i s@\"/mnt\"@\"/\"@ /mnt/etc/snapper/configs/root
 sudo snapper create -t single -d "first root filesystem" --read-write --from 0
 ```
 
-Creiamo i subvolumi di interesse, infine si modifica il default subvolume con il "first root filesystem".
+CSi creano i subvolumi di interesse, infine si modifica il default subvolume con il "first root filesystem".
 
 ```bash
 sudo btrfs subvolume create /mnt/home

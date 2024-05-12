@@ -221,12 +221,16 @@ Abilitiamo la configurazione nel file `/etc/default/snapper`..
 
 ```bash
 sudo sed -i s/SNAPPER_CONFIGS=\"\"/SNAPPER_CONFIGS=\"root\"/g /etc/default/snapper
-sudo systemctl restart snapperd
 ```  
 
 Si riavvia snapper per attivare la configura
 
-Si abilita la quota, in modo da visualizzare il campo "Used space" nella lista delle snapshot.  
+```bash
+sudo systemctl restart snapperd
+```
+
+Si abilita la quota, in questo modo l'algoritmo di pulizia e raccolta delle snapper potrà onorare le direttive `SPACE_LIMIT` e `FREE_LIMIT`.  
+Inoltre, l'output del comando `snapper list` fornirà informazioni riguardo lo spazio utilizzato.    
 
 ```bash
 sudo btrfs quota enable /
@@ -238,7 +242,7 @@ sudo snapper list
 
 ## Creare la configurazione per la /home
 
-Si crea la configurazione `home`, in modo da usufruire delle snapshots anche per il subolume /home.  
+Si crea la configurazione `home`, in modo da usufruire delle snapshots anche per il subvolume /home.  
 
 ```bash
 sudo snapper -c home create-config /home
@@ -246,7 +250,7 @@ sudo snapper -c home create-config /home
 
 ## Installare Btrfs Assistant
 
-Un tool grafico, potente e intuitivo che si può utilizzare per gestire `snapper`, è certamente `Btrfs Assistant`.  
+Un tool grafico, potente e intuitivo, che si può utilizzare per gestire `snapper`, è certamente `Btrfs Assistant`.  
 
 Sfortunatamente, questo software, non è disponibile nei repository ufficiali.  
 Non esiste neanche un repository PPA.  
@@ -321,7 +325,7 @@ Contenuto del file `install_manifest`:
 
 ![](img/2024-05-13-00-05-46.png)
 
-Nel caso si installasse il pacchetto `btrfsmaintenance`, il software `Btrfs Assistant`, potrà essere utilizzato per gestire le operazioni di manutenzione del filesystem.  
+Nel caso si installasse il pacchetto `btrfsmaintenance`, il software `Btrfs Assistant`, potrà essere utilizzato anche per gestire le operazioni di manutenzione del filesystem.  
 
 ![](img/2024-05-13-00-18-57.png)
 

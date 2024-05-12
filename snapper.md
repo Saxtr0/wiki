@@ -173,7 +173,7 @@ sudo mount -o subvol=@/.snapshots $BTRFSDEV /mnt/.snapshots
 
 ## Aggiornare fstab
 
-Si aggiorna il file `mnt/etc/fstab` perchè monti i subvolumi attesi dove atteso.  
+Si aggiorna il file `/mnt/etc/fstab` perchè monti i subvolumi attesi dove atteso.  
 
 ```bash
 BTRFSDEV=$(sudo blkid | grep btrfs | cut -d ":" -f1)
@@ -183,13 +183,18 @@ DISP=$(grep btrfs /mnt/etc/fstab | awk '{print $1}')
 echo -n -e "\n# btrfs\n" | sudo tee -a /mnt/etc/fstab
 grep btrfs /etc/mtab \
 | grep -v "1/snapshot" \
-| sed s@rw.*,subvolid=.*,@defaults,@ \
+| sed s@rw.*,subvolid=.*,@defaults,@ \  # vedi Nota
 | sed s@/mnt@@ \
 | sed s@$BTRFSDEV@$DISP@ \
 | sudo tee -a /mnt/etc/fstab
 ```
 
 ![](img/2024-05-10-04-04-15.png)
+
+Nota: se si volessero personalizzare le opzioni di mount, l'operazione è possibile in questo contesto.  
+```bash
+sed s@rw.*,subvolid=.*,@<opzione 1>,<opzione 2>,@ \
+```
 
 ## Riavvio
 

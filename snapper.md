@@ -229,7 +229,7 @@ Si riavvia snapper per attivare la configura
 sudo systemctl restart snapperd
 ```
 
-Si abilita la quota, in questo modo l'algoritmo di pulizia e raccolta delle snapper potrà onorare le direttive `SPACE_LIMIT` e `FREE_LIMIT`.  
+Si abilita la quota, in questo modo l'algoritmo di pulizia e raccolta delle snapshots, potrà onorare le direttive `SPACE_LIMIT` e `FREE_LIMIT`.  
 Inoltre, l'output del comando `snapper list` fornirà informazioni riguardo lo spazio utilizzato.    
 
 ```bash
@@ -257,7 +257,7 @@ Non esiste neanche un repository PPA.
 
 Attualmente, l'unico riferimento ufficiale(?) ad un pacchetto Ubuntu è: https://launchpad.net/ubuntu/+source/btrfs-assistant  (la versione 1.8, è vecchia di un anno. La versione corrente è 2.1)
 
-Le istruzione per l'installazione sono disponibili nella documentazione ufficiale.  
+Le istruzioni per l'installazione sono disponibili nella documentazione ufficiale.  
 
 https://gitlab.com/btrfs-assistant/btrfs-assistant  
 
@@ -265,10 +265,13 @@ https://gitlab.com/btrfs-assistant/btrfs-assistant
 1. Prerequisiti per l'installazione
 
 ```bash
-sudo apt install git cmake fonts-noto qt6-base-dev qt6-base-dev-tools g++ libbtrfs-dev libbtrfsutil-dev pkexec qt6-svg-dev qt6-tools-dev
+sudo apt install git cmake fonts-noto qt6-base-dev qt6-base-dev-tools \
+g++ libbtrfs-dev libbtrfsutil-dev pkexec qt6-svg-dev qt6-tools-dev
 ```
 
-2. Scaricare i sorgenti (main, o ultima release?)
+2. Scaricare i sorgenti 
+Per questo punto, si hanno a disposizione due opzioni:  
+la versione main, o ultima versione.
 Se si vuole installare la versione main:
 
 ```bash
@@ -280,10 +283,11 @@ Per l'ultima versione:
 
 ```bash
 wget https://gitlab.com/btrfs-assistant/btrfs-assistant/-/archive/2.1/btrfs-assistant-2.1.tar.gz
-cd btrfs-assistant-2.1
+tar btrfs-assistant-2.1.tar.gz
+xvf cd btrfs-assistant-2.1
 ```
 
-3. Costruire il software
+1. Costruire il software
 
 ```bash
 cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE='Release'
@@ -300,6 +304,7 @@ sudo make -C build install
 
 Perchè il software possa essere disinstallato, è necessario conservare la directory in cui è stato costruito.  
 La lista dei files installati, è presente nella sottodirectory `build`.  
+Il comando di disinstallazione è:  
 
 ```bash
 cd build
@@ -307,7 +312,7 @@ sudo xargs rm < install_manifest.txt
 ```
 
 
-Contenuto del file `install_manifest`:
+Contenuto del file `install_manifest` dopo l'installazione:
 
 ```ascii
 /etc/btrfs-assistant.conf

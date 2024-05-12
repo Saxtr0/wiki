@@ -15,8 +15,13 @@
   - [Riavvio](#riavvio)
 - [Primo avvio](#primo-avvio)
   - [Configurare snapper sul sistema appena avviato](#configurare-snapper-sul-sistema-appena-avviato)
-  - [Installare btrfs-assistant](#installare-btrfs-assistant)
+  - [Creare la configurazione per la /home](#creare-la-configurazione-per-la-home)
+  - [Installare Btrfs Assistant](#installare-btrfs-assistant)
 
+<!-- /TOC -->
+<!-- /TOC -->
+<!-- /TOC -->
+<!-- /TOC -->
 <!-- /TOC -->
 
 <!-- /TOC -->
@@ -231,5 +236,96 @@ sudo snapper list
 
 ![](img/2024-05-12-22-28-40.png)
 
-## Installare btrfs-assistant 
+## Creare la configurazione per la /home
+
+Si crea la configurazione `home`, in modo da usufruire delle snapshots anche per il subolume /home.  
+
+```bash
+sudo snapper -c home create-config /home
+```
+
+## Installare Btrfs Assistant
+
+Un tool grafico, potente e intuitivo che si può utilizzare per gestire `snapper`, è certamente `Btrfs Assistant`.  
+
+Sfortunatamente, questo software, non è disponibile nei repository ufficiali.  
+Non esiste neanche un repository PPA.  
+
+Attualmente, l'unico riferimento ufficiale(?) ad un pacchetto Ubuntu è: https://launchpad.net/ubuntu/+source/btrfs-assistant  (la versione 1.8, è vecchia di un anno. La versione corrente è 2.1)
+
+Le istruzione per l'installazione sono disponibili nella documentazione ufficiale.  
+
+https://gitlab.com/btrfs-assistant/btrfs-assistant  
+
+
+1. Prerequisiti per l'installazione
+
+```bash
+sudo apt install git cmake fonts-noto qt6-base-dev qt6-base-dev-tools g++ libbtrfs-dev libbtrfsutil-dev pkexec qt6-svg-dev qt6-tools-dev
+```
+
+2. Scaricare i sorgenti (main, o ultima release?)
+Se si vuole installare la versione main:
+
+```bash
+git clone https://gitlab.com/btrfs-assistant/btrfs-assistant.git
+cd btrfs-assistant
+```
+
+Per l'ultima versione:
+
+```bash
+wget https://gitlab.com/btrfs-assistant/btrfs-assistant/-/archive/2.1/btrfs-assistant-2.1.tar.gz
+cd btrfs-assistant-2.1
+```
+
+3. Costruire il software
+
+```bash
+cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE='Release'
+make -C build
+```
+
+4. Installare il software
+
+```bash
+sudo make -C build install
+```
+ 
+5. Disinstallazione (eventuale)
+
+Perchè il software possa essere disinstallato, è necessario conservare la directory in cui è stato costruito.  
+La lista dei files installati, è presente nella sottodirectory `build`.  
+
+```bash
+cd build
+sudo xargs rm < install_manifest.txt
+```
+
+
+Contenuto del file `install_manifest`:
+
+```ascii
+/etc/btrfs-assistant.conf
+/usr/share/applications/btrfs-assistant.desktop
+/usr/share/metainfo/btrfs-assistant.metainfo.xml
+/usr/share/polkit-1/actions/org.btrfs-assistant.pkexec.policy
+/usr/bin/btrfs-assistant
+/usr/bin/btrfs-assistant-launcher
+/usr/bin/btrfs-assistant-bin
+```
+
+![](img/2024-05-13-00-08-37.png)
+
+![](img/2024-05-13-00-08-57.png)
+
+![](img/2024-05-13-00-05-46.png)
+
+Nel caso si installasse il pacchetto `btrfsmaintenance`, il software `Btrfs Assistant`, potrà essere utilizzato per gestire le operazioni di manutenzione del filesystem.  
+
+![](img/2024-05-13-00-18-57.png)
+
+
+
+
 

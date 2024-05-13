@@ -297,8 +297,8 @@ Per l'ultima versione:
 
 ```bash
 wget https://gitlab.com/btrfs-assistant/btrfs-assistant/-/archive/2.1/btrfs-assistant-2.1.tar.gz
-tar btrfs-assistant-2.1.tar.gz
-xvf cd btrfs-assistant-2.1
+tar xvf btrfs-assistant-2.1.tar.gz
+cd btrfs-assistant-2.1
 ```
 
 1. Costruire il software

@@ -120,7 +120,7 @@ sudo sed -i s@\"/mnt\"@\"/\"@ /mnt/etc/snapper/configs/root
 sudo snapper create -t single -d "first root filesystem" --read-write --from 0
 ```
 
-CSi creano i subvolumi di interesse, infine si modifica il default subvolume con il "first root filesystem".
+Ci creano i subvolumi di interesse, infine si modifica il default subvolume con il "first root filesystem".
 
 ```bash
 sudo btrfs subvolume create /mnt/home
@@ -138,16 +138,15 @@ Inizia l'installazione.
 # Installazione di Ubuntu
 
 Eseguire l'installazione seguendo le istruzioni a video.  
-Scelte di rilievo da eseguire per il buon esito dell'installazione:  
-- Selezionare la procedura "Manuale" durante il setup del disco
+Personalizzare il setup del device di installazione: 
 
-![](img/2024-05-10-02-20-15.png)
+Schermata di installazione | Operazione da effettuare
+---|---
+![](img/2024-05-10-02-20-15.png)| Selezionare "Installazione manuale"
+![](img/2024-05-10-02-22-34.png)| Configurare le partizioni:<br>1. ESP/EFI da utilizzare in /boot/efi<br>2. btrfs da utilizzare in /<br>Attenzione, le partizioni non vanno formattate  
 
-- utilizzare le partizioni prima identificate/create
 
-![](img/2024-05-10-02-22-34.png)
-
-Attenzione, le partizioni non vanno formattate, il dispositivo è già configurato per l'installazione, durante i passaggi Preparazione del disco, e Preparazione del volume btrfs.
+Attenzione, le partizioni non vanno formattate, il dispositivo è stato configurato per l'installazione, durante i passaggi Preparazione del disco, e Preparazione del volume btrfs.
 
 
 # Attività successive l'installazione

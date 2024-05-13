@@ -174,12 +174,12 @@ Si aggiorna il file `/mnt/etc/fstab` perchè monti i subvolumi attesi dove attes
 ```bash
 BTRFSDEV=$(sudo blkid | grep btrfs | cut -d ":" -f1)
 line=$(grep -n btrfs /mnt/etc/fstab | cut -d":" -f1)
-echo "sudo sed -i '"$line"s/.$/0/' /mnt/etc/fstab" | sh
+echo "sudo sed -i '"$line"s/.$/0/' /mnt/etc/fstab" | sh # vedi Nota
 DISP=$(grep btrfs /mnt/etc/fstab | awk '{print $1}')
 echo -n -e "\n# btrfs\n" | sudo tee -a /mnt/etc/fstab
 grep btrfs /etc/mtab \
 | grep -v "1/snapshot" \
-| sed s@rw.*,subvolid=.*,@defaults,@ \  # vedi Nota
+| sed s@rw.*,subvolid=.*,@defaults,@ \ 
 | sed s@/mnt@@ \
 | sed s@$BTRFSDEV@$DISP@ \
 | sudo tee -a /mnt/etc/fstab
@@ -188,8 +188,21 @@ grep btrfs /etc/mtab \
 ![](img/2024-05-10-04-04-15.png)
 
 Nota: se si volessero personalizzare le opzioni di mount, l'operazione è possibile in questo contesto.  
+Eseguire i comandi modificati con le opzioni, al posto del valore "defaults".  
+
 ```bash
-sed s@rw.*,subvolid=.*,@<opzione 1>,<opzione 2>,@ \
+BTRFSDEV=$(sudo blkid | grep btrfs | cut -d ":" -f1)
+line=$(grep -n btrfs /mnt/etc/fstab | cut -d":" -f1)
+echo "sudo sed -i '"$line"s/.$/0/' /mnt/etc/fstab" | sh
+echo "sudo sed -i '"$line"s/defaults/<opzione 1>,<opzione 2>/' /mnt/etc/fstab" | sh 
+DISP=$(grep btrfs /mnt/etc/fstab | awk '{print $1}')
+echo -n -e "\n# btrfs\n" | sudo tee -a /mnt/etc/fstab
+grep btrfs /etc/mtab \
+| grep -v "1/snapshot" \
+sed s@rw.*,subvolid=.*,@<opzione 1>,<opzione 2>,@ \  
+| sed s@/mnt@@ \
+| sed s@$BTRFSDEV@$DISP@ \
+| sudo tee -a /mnt/etc/fstab
 ```
 
 ## Riavvio
